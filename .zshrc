@@ -50,6 +50,8 @@ set -o vi
 alias v='vim'
 alias vd='vimdiff'
 
+alias c="clear"
+
 # git stuff
 alias gs="git status"
 alias ga="git add"
