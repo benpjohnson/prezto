@@ -5,7 +5,7 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-ZSH_THEME="robbyrussell"
+ZSH_THEME="robbyrussellhacked"
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -32,13 +32,18 @@ ZSH_THEME="robbyrussell"
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git)
+plugins=(git vim zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 export PATH=$PATH:/home/ben/sites/tt/node_modules/nodeunit/bin:/home/ben/bin/:/home/ben/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 
+case "$TERM" in
+    rxvt-256color)
+        TERM=rxvt-unicode
+        ;;
+esac
 # List any open tmux sessions
 if [ `whoami` != 'root' ]; then
     tmux list-sessions
@@ -68,16 +73,44 @@ alias tl="tmux list-sessions"
 alias tn="tmux new-session -s"
 alias tx="tmux attach-session -t"
 alias tw="tmux_attach"
+alias ts="tmux attach-session -t `tmux list-sessions -F '#{session_name}' | head -n 1` \; choose-session"
 
 alias ack="ack-grep"
+alias lsprocess="cd ~/devel/ls/process"
+alias boris="~/tools/boris/bin/boris";
+alias o="xdg-open"
+alias s="source ~/.zshrc"
+
+# VPN
+alias vpn="cd /etc/openvpn/ && sudo openvpn './UK London.ovpn'"
 
 function tmux_attach() { 
     echo tmux new-session -s "$@"-w "$@" 
     tmux new-session -s "$@"-w -t "$@" 
 }
 
-if [ -f $HOME/.bashrc.local ]; then
-    source $HOME/.bashrc.local
+if [ -f $HOME/.zshrc.local ]; then
+    source $HOME/.zshrc.local
 fi
 
-alias o=xdg-open
+if [ -f /usr/local/rvm/scripts/rvm ]; then
+    source /usr/local/rvm/scripts/rvm
+fi
+
+bindkey "^R" history-incremental-search-backward
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+set horizontal-scroll-mode on
+
+alias emacs="emacs-snapshot -nw"
+
+# docker
+alias docker="sudo docker.io"
+alias d="sudo docker.io"
+alias di="sudo docker.io images"
+alias dp="sudo docker.io ps"
+# Attach latest
+alias da='lxc-attach -n $(docker ps -notrunc | sed 1d | cut -d " " -f1)'
+# Kill latest
+
