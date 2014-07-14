@@ -12,3 +12,5 @@ fi
 
 # Customize to your needs...
 
+# Override ls options as we are using ancient technology
+alias ls="ls --color=auto"
