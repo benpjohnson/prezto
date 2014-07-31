@@ -58,6 +58,13 @@ function tmux_attach() {
     tmux new-session -s "$@"-w -t "$@" 
 }
 
+# History stuff
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
+
+# Restore reverse search goodness
+bindkey "^R" history-incremental-search-backward
+
 # Source local stuff
 if [ -f $HOME/.zshrc.local ]; then
     source $HOME/.zshrc.local
@@ -115,3 +122,10 @@ t() {
     COMMAND="/usr/bin/php -d 'html_errors=0' /home/bjohnson/bin/phpunit --log-tap ~/.phpunit/log $FILTER"
     eval $COMMAND
 }
+
+prompt robbyrussellhacked
+        
+# suffix aliases for file open goodness
+alias -s php=vim
+alias -s xml=vim
+alias -s html=vim
