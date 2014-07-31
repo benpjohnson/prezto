@@ -37,7 +37,8 @@ zstyle ':prezto:load' pmodule \
   'tmux' \
   'python' \
   'rsync' \
-  'ssh'
+  'ssh' \
+  'work' 
 
 #
 # Editor
