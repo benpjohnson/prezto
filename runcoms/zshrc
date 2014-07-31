@@ -11,7 +11,7 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-export PATH=/home/bjohnson/bin:$PATH:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/bjohnson/.cabal/bin
+export PATH=/home/bjohnson/bin:$PATH:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/bjohnson/.cabal/bin:/home/bjohnson/.composer/vendor/bin
 
 alias c="clear"
 alias sr="source $HOME/.zshrc"
@@ -129,3 +129,5 @@ prompt robbyrussellhacked
 alias -s php=vim
 alias -s xml=vim
 alias -s html=vim
+
+alias composer="php $HOME/tools/composer.phar"

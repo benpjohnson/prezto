@@ -1,6 +1,7 @@
 # FIXME: "plugins" for features:
 # - root indicator
 # - vcsh indicator
+# - host indicator if not on a known "local" machine
 
 function prompt_robbyrussellhacked_setup() {
     local PREFIX="%F{green}➜ %F{white}"
