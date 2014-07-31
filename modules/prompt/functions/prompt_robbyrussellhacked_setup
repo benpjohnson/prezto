@@ -33,9 +33,15 @@ function prompt_robbyrussellhacked_setup() {
     zstyle ':vcs_info:*:prompt:*' formats "${branch_format}"
     zstyle ':vcs_info:*:prompt:*' nvcsformats   ""
 
+    # Add root indicator
+    root=""
+    if [ $(/usr/bin/whoami) = "root" ]; then
+        root="%F{red}(r)%F{white} "
+    fi
+
     # Add hook for calling vcs_info before each command.
     add-zsh-hook precmd prompt_robbyrussellhacked_precmd
-    PROMPT="$PREFIX $PATH "'${vcs_info_msg_0_}'" "
+    PROMPT="$PREFIX $PATH "'${vcs_info_msg_0_}'" $root"
     RPROMPT=""
 }
 
