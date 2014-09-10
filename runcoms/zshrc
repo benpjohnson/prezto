@@ -4,11 +4,81 @@
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+#
+# :P centos http://superuser.com/questions/738829/attempting-to-install-tmux-on-centos-6-4-or-centos-6-5-fails-with-error-evbuff
+export LD_LIBRARY_PATH=/usr/local/lib
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-# Customize to your needs...
+export PATH=$HOME/bin:$PATH
+export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
+# List any open tmux sessions
+if [ `whoami` != 'root' ]; then
+    tmux list-sessions
+fi
+
+# Use vi output mode
+set -o vi
+set EDITOR=vim
+set VISUAL=vim
+
+alias v='vim'
+alias vd='vimdiff'
+
+alias c="clear"
+
+# git stuff
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit"
+alias gca="git commit -a"
+alias gch="git checkout"
+alias gd="git diff"
+alias gb="git branch"
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+# tmux stuff
+alias tmux="tmux -2"
+alias tl="tmux list-sessions"
+alias tn="tmux new-session -s"
+alias tx="tmux attach-session -t"
+alias tw="tmux_attach"
+alias ts="tmux attach-session -t `tmux list-sessions -F '#{session_name}' | head -n 1` \; choose-session"
+
+alias ack="ack-grep"
+alias lsprocess="cd ~/devel/ls/process"
+alias boris="~/tools/boris/bin/boris";
+alias o="xdg-open"
+alias s="source ~/.zshrc"
+
+# VPN
+alias vpn="cd /etc/openvpn/ && sudo openvpn './UK London.ovpn'"
+
+function tmux_attach() { 
+    echo tmux new-session -s "$@"-w "$@" 
+    tmux new-session -s "$@"-w -t "$@" 
+}
+
+if [ -f /usr/local/rvm/scripts/rvm ]; then
+    source /usr/local/rvm/scripts/rvm
+fi
+
+bindkey "^R" history-incremental-search-backward
+
+
+set horizontal-scroll-mode on
+
+alias emacs="emacs-snapshot -nw"
+
+# docker
+alias docker="sudo docker.io"
+alias d="sudo docker.io"
+alias di="sudo docker.io images"
+alias dp="sudo docker.io ps"
+# Attach latest
+alias da='lxc-attach -n $(docker ps -notrunc | sed 1d | cut -d " " -f1)'
+# Kill latest
