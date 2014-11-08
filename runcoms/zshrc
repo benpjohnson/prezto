@@ -4,6 +4,9 @@
 # Authors:
 #   Sorin Ionescu <sorin.ionescu@gmail.com>
 #
+#
+# :P centos http://superuser.com/questions/738829/attempting-to-install-tmux-on-centos-6-4-or-centos-6-5-fails-with-error-evbuff
+export LD_LIBRARY_PATH=/usr/local/lib
 
 # Source Prezto.
 if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
@@ -11,22 +14,17 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
-export PATH=/home/bjohnson/bin:$PATH:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/bjohnson/.cabal/bin:/home/bjohnson/.composer/vendor/bin
-
 alias c="clear"
-alias sr="source $HOME/.zshrc"
 
-# Use vi output mode
+# vim
 set -o vi
-# Mooar vim
 export EDITOR=vim
 export VISUAL=vim
 alias v='vim'
 alias vd='vimdiff'
 alias vs="vim --servername $(tmux display-message -p '#S')"
 
-# git stuff
-# FIXME: review vs prezto stuff
+# git
 alias g="git"
 alias gs="git status"
 alias ga="git add"
@@ -36,23 +34,19 @@ alias gch="git checkout"
 alias gd="git diff"
 alias gb="git branch"
 alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+# Checkout out the git branch with the same name as the current tmux session
+alias gcht="git checkout `tmux display-message -p '#S'`"
 
-# tmux stuff
-# FIXME: review vs prezto stuff
+# tmux
 alias tmux="tmux -2"
 alias tl="tmux list-sessions"
 alias tn="tmux new-session -s"
 alias tx="tmux attach-session -t"
-# Set up one connection to watch another
 alias tw="tmux_attach"
-# Attach to the 1st available session and show a selector for the rest 
-# alias ts="tmux attach-session -t `tmux list-sessions -F '#{session_name}' | head -n 1` \; choose-session"
 alias ts="tmux attach-session \; choose-session"
 # Mirror the current git branch name as a session
 # FIXME chop off the branch "version"
 alias tm="BRANCH=`git rev-parse --abbrev-ref HEAD | cut -d/ -f2 | sed 's/_[0-9]\+$//g'`; ; tmux attach-session -t $BRANCH || tmux new-session -s $BRANCH"
-# Checkout out the git branch with the same name as the current tmux session
-alias gcht="git checkout `tmux display-message -p '#S'`"
 
 function tmux_attach() { 
     echo tmux new-session -s "$@"-w "$@" 
@@ -66,15 +60,9 @@ bindkey "^[[B" history-search-forward
 # Restore reverse search goodness
 bindkey "^R" history-incremental-search-backward
 
-# Source local stuff
+# Source local stuff
 if [ -f $HOME/.zshrc.local ]; then
     source $HOME/.zshrc.local
-fi
-
-# FIXME: ideally rvm would be split
-export rvmsudo_secure_path=0
-if [ -f /etc/profile.d/rvm.sh ]; then
-    source /etc/profile.d/rvm.sh
 fi
 
 # Playing with gpg
@@ -120,7 +108,7 @@ t() {
         fi
     fi
 
-    COMMAND="/usr/bin/php -d 'html_errors=0' /home/bjohnson/bin/phpunit --log-tap ~/.phpunit/log $FILTER"
+    COMMAND="/usr/bin/php -d 'html_errors=0' $HOME/bin/phpunit --log-tap ~/.phpunit/log $FILTER"
     eval $COMMAND
 }
 
@@ -132,3 +120,26 @@ alias -s xml=vim
 alias -s html=vim
 
 alias composer="php $HOME/tools/composer.phar"
+
+export PATH=$HOME/bin:$PATH
+export PATH=$PATH:/usr/local/bin:/bin:/usr/bin:$HOME/.composer/vendor/bin
+
+# List any open tmux sessions
+if [ `whoami` != 'root' ]; then
+    tmux list-sessions
+fi
+
+alias ack="ack-grep"
+alias boris="~/tools/boris/bin/boris";
+alias o="xdg-open"
+alias s="source ~/.zshrc"
+
+set horizontal-scroll-mode on
+alias emacs="emacs-snapshot -nw"
+
+# docker
+alias docker="sudo docker.io"
+alias d="sudo docker.io"
+alias di="sudo docker.io images"
+alias dp="sudo docker.io ps"
+alias da='lxc-attach -n $(docker ps -notrunc | sed 1d | cut -d " " -f1)'
