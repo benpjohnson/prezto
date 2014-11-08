@@ -1,0 +1,134 @@
+#
+# Executes commands at the start of an interactive session.
+#
+# Authors:
+#   Sorin Ionescu <sorin.ionescu@gmail.com>
+#
+
+# Source Prezto.
+if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
+fi
+
+# Customize to your needs...
+export PATH=/home/bjohnson/bin:$PATH:/usr/kerberos/bin:/usr/local/bin:/bin:/usr/bin:/home/bjohnson/.cabal/bin:/home/bjohnson/.composer/vendor/bin
+
+alias c="clear"
+alias sr="source $HOME/.zshrc"
+
+# Use vi output mode
+set -o vi
+# Mooar vim
+export EDITOR=vim
+export VISUAL=vim
+alias v='vim'
+alias vd='vimdiff'
+alias vs="vim --servername $(tmux display-message -p '#S')"
+
+# git stuff
+# FIXME: review vs prezto stuff
+alias g="git"
+alias gs="git status"
+alias ga="git add"
+alias gc="git commit"
+alias gca="git commit -a"
+alias gch="git checkout"
+alias gd="git diff"
+alias gb="git branch"
+alias gl="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit"
+
+# tmux stuff
+# FIXME: review vs prezto stuff
+alias tmux="tmux -2"
+alias tl="tmux list-sessions"
+alias tn="tmux new-session -s"
+alias tx="tmux attach-session -t"
+# Set up one connection to watch another
+alias tw="tmux_attach"
+# Attach to the 1st available session and show a selector for the rest 
+# alias ts="tmux attach-session -t `tmux list-sessions -F '#{session_name}' | head -n 1` \; choose-session"
+alias ts="tmux attach-session \; choose-session"
+# Mirror the current git branch name as a session
+# FIXME chop off the branch "version"
+alias tm="BRANCH=`git rev-parse --abbrev-ref HEAD | cut -d/ -f2 | sed 's/_[0-9]\+$//g'`; ; tmux attach-session -t $BRANCH || tmux new-session -s $BRANCH"
+# Checkout out the git branch with the same name as the current tmux session
+alias gcht="git checkout `tmux display-message -p '#S'`"
+
+function tmux_attach() { 
+    echo tmux new-session -s "$@"-w "$@" 
+    tmux new-session -s "$@"-w -t "$@" 
+}
+
+# History stuff
+bindkey "^[[A" history-search-backward
+bindkey "^[[B" history-search-forward
+
+# Restore reverse search goodness
+bindkey "^R" history-incremental-search-backward
+
+# Source local stuff
+if [ -f $HOME/.zshrc.local ]; then
+    source $HOME/.zshrc.local
+fi
+
+# FIXME: ideally rvm would be split
+export rvmsudo_secure_path=0
+if [ -f /etc/profile.d/rvm.sh ]; then
+    source /etc/profile.d/rvm.sh
+fi
+
+# Playing with gpg
+# FIXME: ideally find a quick way to skip this if already loaded. environment variable/etc.
+function start_gpgagent() {
+gpg-agent --daemon --enable-ssh-support \
+    --write-env-file "${HOME}/.gpg-agent-info" >/dev/null
+
+if [ -f "${HOME}/.gpg-agent-info" ]; then
+    . "${HOME}/.gpg-agent-info"
+    export GPG_AGENT_INFO
+    export SSH_AUTH_SOCK
+fi
+}
+GPG_TTY=$(tty)
+export GPG_TTY
+
+# If I am root expand my worldview
+if [ "$(whoami)" = "root" ]; then 
+    PATH=$PATH:/usr/local/sbin:/sbin:/usr/sbin
+fi
+
+eval "$(fasd --init auto)"
+
+fcat() { for f in "$@"; do echo "$@"; echo -e "\n==> $f <=="; cat "$f"; done; }
+
+# WIP: log phpunit results and filter to failed results only if tests failed,
+# otherwise run all
+# This will need to take current test suite into account
+# FIXME: send failed tests to vim somehow. Perhaps this should run via :Test.
+# Would be cool to syntax highlight failed tests
+# FIXME: dont hardcode home
+# FIXME: could this step up though directories until it finds phpunit.xml
+# making tests work from any directory
+# FIXME: support multiple test results (hash directory)
+t() {
+    FILTER=""
+    if [ -f '/home/bjohnson/.phpunit/log' ]; then
+
+        if grep '^not ok' '/home/bjohnson/.phpunit/log' >/dev/null
+        then
+            FILTER=" --filter '$(echo $(grep '^not ok' '/home/bjohnson/.phpunit/log' | cut -d ' ' -f6 | cut -d \\ -f2 | xargs) | sed 's/ /|/g')'"
+        fi
+    fi
+
+    COMMAND="/usr/bin/php -d 'html_errors=0' /home/bjohnson/bin/phpunit --log-tap ~/.phpunit/log $FILTER"
+    eval $COMMAND
+}
+
+prompt robbyrussellhacked
+        
+# suffix aliases for file open goodness
+alias -s php=vim
+alias -s xml=vim
+alias -s html=vim
+
+alias composer="php $HOME/tools/composer.phar"
