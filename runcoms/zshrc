@@ -85,8 +85,6 @@ if [ "$(whoami)" = "root" ]; then
     PATH=$PATH:/usr/local/sbin:/sbin:/usr/sbin
 fi
 
-eval "$(fasd --init auto)"
-
 fcat() { for f in "$@"; do echo "$@"; echo -e "\n==> $f <=="; cat "$f"; done; }
 
 # WIP: log phpunit results and filter to failed results only if tests failed,

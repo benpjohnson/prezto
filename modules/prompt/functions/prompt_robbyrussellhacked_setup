@@ -41,7 +41,8 @@ function prompt_robbyrussellhacked_setup() {
 
     # Add hook for calling vcs_info before each command.
     add-zsh-hook precmd prompt_robbyrussellhacked_precmd
-    PROMPT="$PREFIX $PATH "'${vcs_info_msg_0_}'" $root"
+    #vcsh="${VCSH_REPO_NAME?git}"
+    PROMPT="$PREFIX $PATH "'${vcs_info_msg_0_}$vcsh'" $root"
     RPROMPT=""
 }
 
