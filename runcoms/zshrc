@@ -20,6 +20,7 @@ alias sr="source $HOME/.zshrc"
 set -o vi
 # Mooar vim
 export EDITOR=vim
+export VISUAL=vim
 alias v='vim'
 alias vd='vimdiff'
 alias vs="vim --servername $(tmux display-message -p '#S')"
