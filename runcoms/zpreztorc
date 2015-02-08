@@ -38,6 +38,8 @@ zstyle ':prezto:load' pmodule \
   'python' \
   'rsync' \
   'ssh' \
+  'yum' \
+  'history-substring-search' \
   'work' 
 
 #
